@@ -12,6 +12,59 @@ enum Role {
   ADMIN
 }
 
+enum TrainType {
+  EXPRESS
+  REGIONAL
+  SUBURBAN
+  INTERCITY
+}
+
+model Station {
+  id        String      @id @default(uuid())
+  name      String
+  code      String?     @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  routeStops RouteStop[]
+}
+
+model Route {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  stops       RouteStop[]
+  schedules   TrainSchedule[]
+}
+
+model RouteStop {
+  id               String   @id @default(uuid())
+  routeId          String
+  route            Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  stationId        String
+  station          Station  @relation(fields: [stationId], references: [id], onDelete: Restrict)
+  sequence         Int
+  minutesFromStart Int      @default(0)
+
+  @@unique([routeId, sequence])
+  @@index([routeId])
+}
+
+model TrainSchedule {
+  id           String    @id @default(uuid())
+  routeId      String
+  route        Route     @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  departureAt  DateTime
+  trainNumber  String
+  trainType    TrainType
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([routeId])
+  @@index([departureAt])
+}
+
 model User {
   id            String          @id @default(uuid())
   email         String          @unique
