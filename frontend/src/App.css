@@ -1,0 +1,39 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.app__header {
+  padding: 1.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.app__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.app__subtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+}
+
+.app__main {
+  flex: 1;
+  padding: 1.25rem;
+}
+
+.app__placeholder {
+  margin: 0;
+  padding: 1rem 1.125rem;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
