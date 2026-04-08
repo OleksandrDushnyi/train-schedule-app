@@ -9,16 +9,10 @@ import type { CreateRouteStopDto } from './dto/create-route-stop.dto';
 import type { CreateRouteDto } from './dto/create-route.dto';
 import type { UpdateRouteStopDto } from './dto/update-route-stop.dto';
 import type { UpdateRouteDto } from './dto/update-route.dto';
-import type { RouteWithStops } from './interfaces';
+import type { RouteWithStops } from './interfaces/route-with-stops.interface';
+import { routeInclude } from './routes.constants';
 
-export type { RouteWithStops } from './interfaces';
-
-const routeInclude = {
-  stops: {
-    orderBy: { sequence: 'asc' as const },
-    include: { station: true },
-  },
-};
+export type { RouteWithStops } from './interfaces/route-with-stops.interface';
 
 @Injectable()
 export class RoutesService {

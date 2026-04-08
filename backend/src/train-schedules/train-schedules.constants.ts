@@ -1,10 +1,7 @@
+import { routeInclude } from '../routes/routes.constants';
+
 export const scheduleInclude = {
   route: {
-    include: {
-      stops: {
-        orderBy: { sequence: 'asc' as const },
-        include: { station: true },
-      },
-    },
+    include: routeInclude,
   },
 };

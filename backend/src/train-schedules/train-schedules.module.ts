@@ -5,5 +5,6 @@ import { TrainSchedulesService } from './train-schedules.service';
 @Module({
   controllers: [TrainSchedulesController],
   providers: [TrainSchedulesService],
+  exports: [TrainSchedulesService],
 })
 export class TrainSchedulesModule {}
