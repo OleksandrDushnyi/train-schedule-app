@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import type { TrainType } from '../common/enums/train-type.enum';
+import { PrismaService } from '../prisma/prisma.service';
 import { RealtimeGateway } from '../realtime/realtime.gateway';
 import type { CreateTrainScheduleDto } from './dto/create-train-schedule.dto';
 import type { QueryTrainSchedulesDto } from './dto/query-train-schedules.dto';
 import type { UpdateTrainScheduleDto } from './dto/update-train-schedule.dto';
-import { scheduleInclude } from './train-schedules.constants';
 import type { TrainScheduleWithRoute } from './interfaces';
+import { scheduleInclude } from './train-schedules.constants';
 
 export type { TrainScheduleWithRoute } from './interfaces';
 
