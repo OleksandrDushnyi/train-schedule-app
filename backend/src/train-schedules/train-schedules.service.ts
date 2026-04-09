@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { TrainType } from '../common/enums/train-type.enum';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 import type { CreateTrainScheduleDto } from './dto/create-train-schedule.dto';
 import type { QueryTrainSchedulesDto } from './dto/query-train-schedules.dto';
 import type { UpdateTrainScheduleDto } from './dto/update-train-schedule.dto';
@@ -11,7 +12,10 @@ export type { TrainScheduleWithRoute } from './interfaces';
 
 @Injectable()
 export class TrainSchedulesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly realtimeGateway: RealtimeGateway,
+  ) {}
 
   async create(dto: CreateTrainScheduleDto): Promise<TrainScheduleWithRoute> {
     const route = await this.prisma.route.findUnique({
@@ -20,7 +24,7 @@ export class TrainSchedulesService {
     if (!route) {
       throw new NotFoundException('Route not found');
     }
-    return this.prisma.trainSchedule.create({
+    const created = await this.prisma.trainSchedule.create({
       data: {
         routeId: dto.routeId,
         departureAt: new Date(dto.departureAt),
@@ -29,6 +33,8 @@ export class TrainSchedulesService {
       },
       include: scheduleInclude,
     });
+    this.realtimeGateway.emitTrainScheduleCreated(created);
+    return created;
   }
 
   findAll(query: QueryTrainSchedulesDto): Promise<TrainScheduleWithRoute[]> {
@@ -63,7 +69,7 @@ export class TrainSchedulesService {
         throw new NotFoundException('Route not found');
       }
     }
-    return this.prisma.trainSchedule.update({
+    const updated = await this.prisma.trainSchedule.update({
       where: { id },
       data: {
         ...(dto.routeId !== undefined && { routeId: dto.routeId }),
@@ -77,11 +83,18 @@ export class TrainSchedulesService {
       },
       include: scheduleInclude,
     });
+    this.realtimeGateway.emitTrainScheduleUpdated(updated);
+    return updated;
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.trainSchedule.delete({ where: { id } });
+    const deleted = await this.prisma.trainSchedule.delete({ where: { id } });
+    this.realtimeGateway.emitTrainScheduleDeleted({
+      id: deleted.id,
+      routeId: deleted.routeId,
+    });
+    return deleted;
   }
 
   private buildWhere(query: QueryTrainSchedulesDto) {

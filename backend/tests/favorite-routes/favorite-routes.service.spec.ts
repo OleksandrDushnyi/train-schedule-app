@@ -1,6 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { FavoriteRoutesService } from './favorite-routes.service';
+import { FavoriteRoutesService } from '../../src/favorite-routes/favorite-routes.service';
 
 describe('FavoriteRoutesService', () => {
   const prisma = {

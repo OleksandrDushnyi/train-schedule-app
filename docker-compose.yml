@@ -39,7 +39,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/train_schedule?schema=public
       PORT: 3000
-      CORS_ORIGIN: http://localhost:8080
+      CORS_ORIGIN: http://localhost:8080,http://localhost:5173
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string-in-production}
       JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}

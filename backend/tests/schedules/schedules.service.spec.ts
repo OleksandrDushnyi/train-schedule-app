@@ -1,4 +1,4 @@
-import { SchedulesService } from './schedules.service';
+import { SchedulesService } from '../../src/schedules/schedules.service';
 
 describe('SchedulesService', () => {
   const prisma = {

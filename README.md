@@ -58,10 +58,16 @@ Frontend:
 From the project root:
 
 ```bash
-docker compose up --build
+docker compose up -d --build
 ```
 
-Then seed demo users:
+`docker compose exec` only works while containers are running. If you used `docker compose up` without `-d` and stopped the stack with Ctrl+C, start it again with the command above, or seed without a long‑running backend:
+
+```bash
+docker compose run --rm backend npx prisma db seed
+```
+
+With the stack up in detached mode, you can also run:
 
 ```bash
 docker compose exec backend npx prisma db seed
