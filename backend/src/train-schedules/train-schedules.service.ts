@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TrainType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import type { TrainType } from '../common/enums/train-type.enum';
 import type { CreateTrainScheduleDto } from './dto/create-train-schedule.dto';
 import type { QueryTrainSchedulesDto } from './dto/query-train-schedules.dto';
 import type { UpdateTrainScheduleDto } from './dto/update-train-schedule.dto';

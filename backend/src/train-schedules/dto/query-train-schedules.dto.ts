@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { TrainType } from '@prisma/client';
 import { IsDateString, IsEnum, IsOptional, IsUUID } from 'class-validator';
+import { TrainType } from '../../common/enums/train-type.enum';
 
 export class QueryTrainSchedulesDto {
   @ApiPropertyOptional({ example: '2026-04-10' })

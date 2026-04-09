@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TrainType } from '@prisma/client';
 import {
   IsDateString,
   IsEnum,
@@ -7,6 +6,7 @@ import {
   IsUUID,
   MaxLength,
 } from 'class-validator';
+import { TrainType } from '../../common/enums/train-type.enum';
 
 export class CreateTrainScheduleDto {
   @ApiProperty()
