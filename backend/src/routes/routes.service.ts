@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { RedisService } from '../redis/redis.service';
 import type { CreateRouteStopDto } from './dto/create-route-stop.dto';
 import type { CreateRouteDto } from './dto/create-route.dto';
 import type { UpdateRouteStopDto } from './dto/update-route-stop.dto';
@@ -16,16 +17,21 @@ export type { RouteWithStops } from './interfaces/route-with-stops.interface';
 
 @Injectable()
 export class RoutesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
+  ) {}
 
-  create(dto: CreateRouteDto): Promise<RouteWithStops> {
-    return this.prisma.route.create({
+  async create(dto: CreateRouteDto): Promise<RouteWithStops> {
+    const created = await this.prisma.route.create({
       data: {
         name: dto.name.trim(),
         description: dto.description?.trim() || null,
       },
       include: routeInclude,
     });
+    await this.redis.invalidateScheduleFiltersCache();
+    return created;
   }
 
   findAll(): Promise<RouteWithStops[]> {
@@ -48,7 +54,7 @@ export class RoutesService {
 
   async update(id: string, dto: UpdateRouteDto) {
     await this.findOne(id);
-    return this.prisma.route.update({
+    const updated = await this.prisma.route.update({
       where: { id },
       data: {
         ...(dto.name !== undefined && { name: dto.name.trim() }),
@@ -58,13 +64,17 @@ export class RoutesService {
       },
       include: routeInclude,
     });
+    await this.redis.invalidateScheduleFiltersCache();
+    return updated;
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.prisma.route.delete({
+    const deleted = await this.prisma.route.delete({
       where: { id },
     });
+    await this.redis.invalidateScheduleFiltersCache();
+    return deleted;
   }
 
   async addStop(routeId: string, dto: CreateRouteStopDto) {
@@ -76,7 +86,7 @@ export class RoutesService {
       throw new NotFoundException('Station not found');
     }
     try {
-      return await this.prisma.routeStop.create({
+      const created = await this.prisma.routeStop.create({
         data: {
           routeId,
           stationId: dto.stationId,
@@ -85,6 +95,8 @@ export class RoutesService {
         },
         include: { station: true },
       });
+      await this.redis.invalidateScheduleFiltersCache();
+      return created;
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -107,7 +119,7 @@ export class RoutesService {
       throw new NotFoundException('Route stop not found');
     }
     try {
-      return await this.prisma.routeStop.update({
+      const updated = await this.prisma.routeStop.update({
         where: { id: stopId },
         data: {
           ...(dto.sequence !== undefined && { sequence: dto.sequence }),
@@ -117,6 +129,8 @@ export class RoutesService {
         },
         include: { station: true },
       });
+      await this.redis.invalidateScheduleFiltersCache();
+      return updated;
     } catch (e) {
       if (
         e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -138,6 +152,10 @@ export class RoutesService {
     if (!existing) {
       throw new NotFoundException('Route stop not found');
     }
-    return this.prisma.routeStop.delete({ where: { id: stopId } });
+    const deleted = await this.prisma.routeStop.delete({
+      where: { id: stopId },
+    });
+    await this.redis.invalidateScheduleFiltersCache();
+    return deleted;
   }
 }

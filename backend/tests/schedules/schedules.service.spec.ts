@@ -15,13 +15,22 @@ describe('SchedulesService', () => {
     findOne: jest.fn(),
   };
 
+  const redis = {
+    isEnabled: jest.fn().mockReturnValue(false),
+    getString: jest.fn(),
+    setString: jest.fn(),
+    scheduleFiltersCacheTtlSeconds: jest.fn().mockReturnValue(120),
+  };
+
   let service: SchedulesService;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    redis.isEnabled.mockReturnValue(false);
     service = new SchedulesService(
       prisma as never,
       trainSchedulesService as never,
+      redis as never,
     );
   });
 
