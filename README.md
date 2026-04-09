@@ -10,6 +10,11 @@
 - Admin: `admin@demo.train` / `Admin123!`
 - User: `user@demo.train` / `User123!`
 
+## Live demo (Render)
+
+- API: [https://train-schedule-app-8nsq.onrender.com/api](https://train-schedule-app-8nsq.onrender.com/api)
+- Swagger: [https://train-schedule-app-8nsq.onrender.com/api/docs](https://train-schedule-app-8nsq.onrender.com/api/docs) — e.g. [try login](https://train-schedule-app-8nsq.onrender.com/api/docs#/auth/AuthController_login)
+
 ## Local setup
 
 ### 1. Start infrastructure
